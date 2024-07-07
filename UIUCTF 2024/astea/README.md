@@ -1,6 +1,6 @@
 ## Challenge
 
-The challenge allows you to send it a string of Python code which it will execute, subject to the following limitations:
+This is a miscellaneous challenge allows you to send it a string of Python code which it will execute, subject to the following limitations:
 - It only reads one line of your import, so your code has to fit on one line.
 - It parses your code using the `ast` module, removing all instances of `Call`, `Import`, `ImportFrom`, `Assign`, or `BinOp` expressions, either replacing it with a call to a predefined function (`Call`expressions become `safe_call()`, and `Import`/`ImportFrom` statements become `safe_import()`).
 - Access to `builtins` is removed by setting `__builtins__` to an empty dictionary when executing your code.
