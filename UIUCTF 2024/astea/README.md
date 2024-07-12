@@ -48,8 +48,7 @@ A.__iadd__ = print
 a += 1 # prints 1
 ```
 
-<!-- TODO: add footnote mentioning a.__class__? -->
-That tells us that in order to use the above strategy we need access to an instance of a class that we can change `__iadd__` for, as well as access to that class itself. Printing out what `safe_import.__globals__` contains seems to point to the `cup` variable as a decent candidate, since it's an object of type `ast.Module`, and that globals dictionary also contains the `ast` module in `safe_import.__globals__['ast']`. Putting that together we can create a payload that prints `safe_import.__globals__` as follows (line breaks added to make it easier to read):
+That tells us that in order to use the above strategy we need access to an instance of a class that we can change `__iadd__` for, as well as access to that class itself.[^1] Printing out what `safe_import.__globals__` contains seems to point to the `cup` variable as a decent candidate, since it's an object of type `ast.Module`, and that globals dictionary also contains the `ast` module in `safe_import.__globals__['ast']`. Putting that together we can create a payload that prints `safe_import.__globals__` as follows (line breaks added to make it easier to read):
 ```py
 safe_import.__globals__['ast'].Module.__iadd__: 1 = safe_import.__builtins__['print'];
 safe_import.__globals__['cup'] += safe_import.__globals__
@@ -71,3 +70,5 @@ I ended up settling on `__getitem__` since it satisfies all of the above require
 After all of the above, we've found a way around nearly all of the limitations that the challenge put on us, so now we just need to get the flag. The first function I thought of trying to use was `os.system` since that lets us run arbitrary commands, so the code we want to execute is `__import__('os').system("command")` for some command of our choice, which just requires 2 uses of the above method for calling (for `__import__` and `os.system`), leading to the solution included in [solution.py](solution.py).
 
 Running `ls` using that shows a `flag.txt` file in the current directory, and then running `cat flag.txt` gives us the flag `uiuctf{maybe_we_shouldnt_sandbox_python_2691d6c1}`.
+
+[^1]: I realized while writing this that I could have avoided this problem entirely since if you have some instance `a` then `a.__class__` is the class of `a` (see the docs [here](https://docs.python.org/3/library/stdtypes.html#instance.__class__)) which lets us set attributes on the class fairly easily, but I didn't think of that during the CTF.
